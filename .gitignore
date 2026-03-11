@@ -51,3 +51,9 @@ visitor_log.jsonl
 download_cache.json
 downloads/
 bottube_templates_backup_*/
+
+# Database files - NEVER sync to VPS
+bottube.db
+bottube.db-wal
+bottube.db-shm
+*.db-journal
