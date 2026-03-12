@@ -1,0 +1,41 @@
+name: Community Metrics Collection
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天 UTC 0 点运行
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  collect-metrics:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      
+      - name: Collect metrics
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+        run: python docs/collect_metrics.py
+      
+      - name: Commit and push metrics
+        run: |
+          git config --local user.email "bot@rustchain.org"
+          git config --local user.name "Metrics Bot"
+          git add docs/metrics/
+          git commit -m "chore: daily metrics $(date -I)" || exit 0
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
