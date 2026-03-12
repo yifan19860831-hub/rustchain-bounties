@@ -1,0 +1,16 @@
+# RustChain Miner Configuration
+
+# RPC endpoint for RustChain network
+rpc_endpoint = "https://rustchain.org/api"
+
+# Your unique miner ID (replace with your actual miner ID)
+miner_id = "your_miner_id_here"
+
+# Attestation interval in seconds
+interval_seconds = 60
+
+# Optional: Custom attestation data directory
+# data_dir = "./data"
+
+# Optional: Log level (debug, info, warn, error)
+# log_level = "info"
