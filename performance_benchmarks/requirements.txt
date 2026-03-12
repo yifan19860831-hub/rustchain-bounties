@@ -1,0 +1,12 @@
+# RustChain Performance Benchmark Suite
+# Requirements
+
+# Async HTTP client
+aiohttp>=3.9.0
+
+# Data processing
+statistics  # Built-in Python 3.4+
+
+# Optional: For enhanced reporting
+# matplotlib>=3.7.0  # For graphs
+# pandas>=2.0.0      # For data analysis
