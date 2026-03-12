@@ -1,0 +1,29 @@
+# RustChain Wallet Extension - .gitignore
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Generated files
+icons/icon16.png
+icons/icon48.png
+icons/icon128.png
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Build outputs
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp

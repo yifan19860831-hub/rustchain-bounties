@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RustChain Crypto Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #667eea; }
+    h2 { color: #333; font-size: 18px; margin-top: 0; }
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px;
+    }
+    button:hover { opacity: 0.9; }
+    .output {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .success { color: #10b981; }
+    .error { color: #ef4444; }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: 500;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: inherit;
+    }
+    textarea { min-height: 80px; resize: vertical; }
+  </style>
+</head>
+<body>
+  <h1>🦀 RustChain Crypto Test Suite</h1>
+  
+  <div class="card">
+    <h2>1. Generate Mnemonic</h2>
+    <button onclick="testGenerateMnemonic()">Generate</button>
+    <div id="mnemonic-output" class="output"></div>
+  </div>
+
+  <div class="card">
+    <h2>2. Derive KeyPair from Mnemonic</h2>
+    <label for="test-mnemonic">Enter Mnemonic (or use generated above):</label>
+    <textarea id="test-mnemonic" placeholder="abandon ability able about..."></textarea>
+    <button onclick="testDeriveKeypair()">Derive Keys</button>
+    <div id="keypair-output" class="output"></div>
+  </div>
+
+  <div class="card">
+    <h2>3. Generate Address</h2>
+    <button onclick="testGenerateAddress()">Generate from Test Keypair</button>
+    <div id="address-output" class="output"></div>
+  </div>
+
+  <div class="card">
+    <h2>4. Encrypt/Decrypt Keystore</h2>
+    <label for="test-data">Data to Encrypt:</label>
+    <textarea id="test-data">{"privateKey": "secret123", "address": "RTC123..."}</textarea>
+    <label for="test-password">Password:</label>
+    <input type="text" id="test-password" value="testpass123">
+    <button onclick="testEncrypt()">Encrypt</button>
+    <button onclick="testDecrypt()">Decrypt</button>
+    <div id="encrypt-output" class="output"></div>
+  </div>
+
+  <div class="card">
+    <h2>5. Sign Message</h2>
+    <label for="test-message">Message to Sign:</label>
+    <input type="text" id="test-message" value="Hello, RustChain!">
+    <button onclick="testSign()">Sign Message</button>
+    <div id="sign-output" class="output"></div>
+  </div>
+
+  <div class="card">
+    <h2>Test Results Summary</h2>
+    <div id="summary-output" class="output"></div>
+  </div>
+
+  <script src="src/crypto.js"></script>
+  <script>
+    let testKeyPair = null;
+    let testEncrypted = null;
+    const results = {};
+
+    async function testGenerateMnemonic() {
+      try {
+        const output = document.getElementById('mnemonic-output');
+        output.textContent = 'Generating...';
+        
+        const mnemonic = await RustChainCrypto.generateMnemonic();
+        document.getElementById('test-mnemonic').value = mnemonic;
+        
+        output.innerHTML = `<span class="success">✓ Success</span>\n\nMnemonic (${mnemonic.split(' ').length} words):\n${mnemonic}`;
+        results.mnemonic = true;
+        updateSummary();
+      } catch (error) {
+        document.getElementById('mnemonic-output').innerHTML = `<span class="error">✗ Error:</span> ${error.message}`;
+        results.mnemonic = false;
+        updateSummary();
+      }
+    }
+
+    async function testDeriveKeypair() {
+      try {
+        const output = document.getElementById('keypair-output');
+        const mnemonic = document.getElementById('test-mnemonic').value.trim();
+        
+        if (!mnemonic) {
+          output.innerHTML = '<span class="error">✗ Error:</span> Please enter a mnemonic';
+          return;
+        }
+        
+        output.textContent = 'Deriving keys...';
+        testKeyPair = await RustChainCrypto.deriveKeyPair(mnemonic);
+        
+        const publicKey = await crypto.subtle.exportKey('raw', testKeyPair.publicKey);
+        const publicKeyHex = RustChainCrypto.bytesToHex(new Uint8Array(publicKey));
+        
+        output.innerHTML = `<span class="success">✓ Success</span>\n\nPublic Key (hex):\n${publicKeyHex}\n\nKey Algorithm: Ed25519`;
+        results.keypair = true;
+        updateSummary();
+      } catch (error) {
+        document.getElementById('keypair-output').innerHTML = `<span class="error">✗ Error:</span> ${error.message}`;
+        results.keypair = false;
+        updateSummary();
+      }
+    }
+
+    async function testGenerateAddress() {
+      try {
+        const output = document.getElementById('address-output');
+        
+        if (!testKeyPair) {
+          output.innerHTML = '<span class="error">✗ Error:</span> Please derive a keypair first';
+          return;
+        }
+        
+        const address = await RustChainCrypto.generateAddress(testKeyPair.publicKey);
+        
+        output.innerHTML = `<span class="success">✓ Success</span>\n\nRTC Address:\n${address}`;
+        results.address = true;
+        updateSummary();
+      } catch (error) {
+        document.getElementById('address-output').innerHTML = `<span class="error">✗ Error:</span> ${error.message}`;
+        results.address = false;
+        updateSummary();
+      }
+    }
+
+    async function testEncrypt() {
+      try {
+        const output = document.getElementById('encrypt-output');
+        const data = JSON.parse(document.getElementById('test-data').value);
+        const password = document.getElementById('test-password').value;
+        
+        output.textContent = 'Encrypting...';
+        testEncrypted = await RustChainCrypto.encryptKeystore(data, password);
+        
+        output.innerHTML = `<span class="success">✓ Success</span>\n\nEncrypted Keystore:\n${JSON.stringify(testEncrypted, null, 2)}`;
+        results.encrypt = true;
+        updateSummary();
+      } catch (error) {
+        document.getElementById('encrypt-output').innerHTML = `<span class="error">✗ Error:</span> ${error.message}`;
+        results.encrypt = false;
+        updateSummary();
+      }
+    }
+
+    async function testDecrypt() {
+      try {
+        const output = document.getElementById('encrypt-output');
+        const password = document.getElementById('test-password').value;
+        
+        if (!testEncrypted) {
+          output.innerHTML = '<span class="error">✗ Error:</span> Please encrypt data first';
+          return;
+        }
+        
+        output.textContent = 'Decrypting...';
+        const decrypted = await RustChainCrypto.decryptKeystore(testEncrypted, password);
+        
+        output.innerHTML = `<span class="success">✓ Success</span>\n\nDecrypted Data:\n${JSON.stringify(decrypted, null, 2)}`;
+        results.decrypt = true;
+        updateSummary();
+      } catch (error) {
+        document.getElementById('encrypt-output').innerHTML = `<span class="error">✗ Error:</span> ${error.message}`;
+        results.decrypt = false;
+        updateSummary();
+      }
+    }
+
+    async function testSign() {
+      try {
+        const output = document.getElementById('sign-output');
+        
+        if (!testKeyPair) {
+          output.innerHTML = '<span class="error">✗ Error:</span> Please derive a keypair first';
+          return;
+        }
+        
+        const message = document.getElementById('test-message').value;
+        const signature = await RustChainCrypto.signMessage(testKeyPair.privateKey, message);
+        
+        output.innerHTML = `<span class="success">✓ Success</span>\n\nMessage: ${message}\n\nSignature:\n${signature}`;
+        results.sign = true;
+        updateSummary();
+      } catch (error) {
+        document.getElementById('sign-output').innerHTML = `<span class="error">✗ Error:</span> ${error.message}`;
+        results.sign = false;
+        updateSummary();
+      }
+    }
+
+    function updateSummary() {
+      const summary = document.getElementById('summary-output');
+      const total = Object.keys(results).length;
+      const passed = Object.values(results).filter(r => r).length;
+      
+      summary.innerHTML = `Tests Run: ${total}\nPassed: ${passed}\nFailed: ${total - passed}\n\n` +
+        Object.entries(results).map(([test, passed]) => 
+          `${passed ? '✓' : '✗'} ${test}`
+        ).join('\n');
+      
+      if (total === 6 && passed === 6) {
+        summary.innerHTML += '\n\n🎉 All tests passed!';
+      }
+    }
+
+    // Auto-run basic test on load
+    window.addEventListener('load', () => {
+      testGenerateMnemonic();
+    });
+  </script>
+</body>
+</html>

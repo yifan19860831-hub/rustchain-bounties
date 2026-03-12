@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RustChain Wallet</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 360px;
+      min-height: 500px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .balance-card {
+      text-align: center;
+    }
+
+    .balance-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .balance-amount {
+      font-size: 36px;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .balance-currency {
+      font-size: 16px;
+      color: #999;
+    }
+
+    .address-display {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      background: #f5f5f5;
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 10px;
+      word-break: break-all;
+      color: #666;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 10px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .input-group input,
+    .input-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .input-group input:focus,
+    .input-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .input-group textarea {
+      resize: vertical;
+      min-height: 80px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: white;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: white;
+      color: #667eea;
+    }
+
+    .tab:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .transaction-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .transaction-item {
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .transaction-item:last-child {
+      border-bottom: none;
+    }
+
+    .tx-info {
+      flex: 1;
+    }
+
+    .tx-amount {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .tx-amount.positive {
+      color: #10b981;
+    }
+
+    .tx-amount.negative {
+      color: #ef4444;
+    }
+
+    .tx-address {
+      font-size: 11px;
+      color: #999;
+      font-family: 'Courier New', monospace;
+      margin-top: 4px;
+    }
+
+    .tx-time {
+      font-size: 11px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .mnemonic-display {
+      background: #fff9e6;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+
+    .mnemonic-words {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mnemonic-word {
+      background: white;
+      padding: 6px;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      border: 1px solid #f59e0b;
+    }
+
+    .mnemonic-warning {
+      font-size: 12px;
+      color: #dc2626;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .status-message {
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .status-message.error {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .status-message.success {
+      background: #d1fae5;
+      color: #059669;
+    }
+
+    .status-message.info {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .copy-btn {
+      background: none;
+      border: none;
+      color: #667eea;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🦀 RustChain Wallet</h1>
+      <p>Official RTC Wallet Extension</p>
+    </div>
+
+    <!-- Unlock Screen -->
+    <div id="unlock-view" class="view">
+      <div class="card">
+        <h2 style="margin-bottom: 15px; font-size: 18px;">Welcome Back</h2>
+        <div id="unlock-status"></div>
+        <div class="input-group">
+          <label for="unlock-password">Password</label>
+          <input type="password" id="unlock-password" placeholder="Enter your password">
+        </div>
+        <button class="btn btn-primary" id="unlock-btn">Unlock</button>
+        <button class="btn btn-secondary" id="import-btn">Import Wallet</button>
+      </div>
+    </div>
+
+    <!-- Create/Import Screen -->
+    <div id="create-view" class="view">
+      <div class="tabs">
+        <div class="tab active" data-tab="create">Create</div>
+        <div class="tab" data-tab="import">Import</div>
+      </div>
+
+      <div id="create-tab" class="view active">
+        <div class="card">
+          <h3 style="margin-bottom: 15px; font-size: 16px;">Create New Wallet</h3>
+          <div id="create-status"></div>
+          <div class="input-group">
+            <label for="create-password">Password</label>
+            <input type="password" id="create-password" placeholder="Create a strong password">
+          </div>
+          <div class="input-group">
+            <label for="confirm-password">Confirm Password</label>
+            <input type="password" id="confirm-password" placeholder="Confirm your password">
+          </div>
+          <button class="btn btn-primary" id="create-wallet-btn">Create Wallet</button>
+        </div>
+      </div>
+
+      <div id="import-tab" class="view">
+        <div class="card">
+          <h3 style="margin-bottom: 15px; font-size: 16px;">Import Wallet</h3>
+          <div id="import-status"></div>
+          <div class="input-group">
+            <label for="import-mnemonic">Seed Phrase (12-24 words)</label>
+            <textarea id="import-mnemonic" placeholder="Enter your seed phrase separated by spaces"></textarea>
+          </div>
+          <div class="input-group">
+            <label for="import-password">Password</label>
+            <input type="password" id="import-password" placeholder="Create a password">
+          </div>
+          <button class="btn btn-primary" id="import-wallet-btn">Import Wallet</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mnemonic Backup Screen -->
+    <div id="backup-view" class="view">
+      <div class="card">
+        <h3 style="margin-bottom: 10px; font-size: 16px; color: #dc2626;">⚠️ Backup Your Seed Phrase</h3>
+        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
+          Write down these words in order and store them somewhere safe. This is the ONLY way to recover your wallet!
+        </p>
+        <div class="mnemonic-display">
+          <div id="mnemonic-words" class="mnemonic-words"></div>
+          <div class="mnemonic-warning">
+            ⚠️ Never share your seed phrase with anyone!
+          </div>
+        </div>
+        <button class="btn btn-primary" id="backup-done-btn">I've Backed It Up</button>
+      </div>
+    </div>
+
+    <!-- Main Wallet Screen -->
+    <div id="wallet-view" class="view">
+      <div class="card balance-card">
+        <div class="balance-label">Total Balance</div>
+        <div class="balance-amount" id="balance-display">0.00</div>
+        <div class="balance-currency">RTC</div>
+        <div class="address-display">
+          <span id="address-display">Loading...</span>
+          <button class="copy-btn" id="copy-address-btn">📋 Copy</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="send">Send</div>
+        <div class="tab" data-tab="receive">Receive</div>
+        <div class="tab" data-tab="history">History</div>
+        <div class="tab" data-tab="settings">Settings</div>
+      </div>
+
+      <!-- Send Tab -->
+      <div id="send-tab" class="view active">
+        <div class="card">
+          <h3 style="margin-bottom: 15px; font-size: 16px;">Send RTC</h3>
+          <div id="send-status"></div>
+          <div class="input-group">
+            <label for="send-address">Recipient Address</label>
+            <input type="text" id="send-address" placeholder="RTC...">
+          </div>
+          <div class="input-group">
+            <label for="send-amount">Amount (RTC)</label>
+            <input type="number" id="send-amount" placeholder="0.00" step="0.01" min="0">
+          </div>
+          <div class="input-group">
+            <label for="send-memo">Memo (optional)</label>
+            <input type="text" id="send-memo" placeholder="Payment note">
+          </div>
+          <div class="input-group">
+            <label for="send-password">Password</label>
+            <input type="password" id="send-password" placeholder="Enter password to confirm">
+          </div>
+          <button class="btn btn-primary" id="send-btn">Send RTC</button>
+        </div>
+      </div>
+
+      <!-- Receive Tab -->
+      <div id="receive-tab" class="view">
+        <div class="card">
+          <h3 style="margin-bottom: 15px; font-size: 16px;">Receive RTC</h3>
+          <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
+            Share your address to receive RTC payments
+          </p>
+          <div class="address-display" style="margin-bottom: 15px;">
+            <span id="receive-address-display">Loading...</span>
+            <button class="copy-btn" id="copy-receive-btn">📋 Copy</button>
+          </div>
+          <div id="qr-code" style="text-align: center; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+            <p style="color: #999; font-size: 12px;">QR Code (coming soon)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Tab -->
+      <div id="history-tab" class="view">
+        <div class="card">
+          <h3 style="margin-bottom: 15px; font-size: 16px;">Transaction History</h3>
+          <div id="history-list" class="transaction-list">
+            <div class="loading">Loading transactions...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Tab -->
+      <div id="settings-tab" class="view">
+        <div class="card">
+          <h3 style="margin-bottom: 15px; font-size: 16px;">Settings</h3>
+          <div class="input-group">
+            <label for="node-url">Node URL</label>
+            <input type="text" id="node-url" value="https://50.28.86.131">
+          </div>
+          <button class="btn btn-secondary" id="save-node-btn">Save Node URL</button>
+          <button class="btn btn-secondary" id="lock-wallet-btn" style="margin-top: 10px;">Lock Wallet</button>
+          <button class="btn btn-secondary" id="export-seed-btn" style="margin-top: 10px;">Show Seed Phrase</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
