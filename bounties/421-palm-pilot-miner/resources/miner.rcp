@@ -1,0 +1,202 @@
+// RustChain Miner - Palm OS Resource File
+// 
+// This file defines the UI forms, labels, and buttons for the miner app.
+
+#include <PalmOS.h>
+#include <PalmOSResources.h>
+#include "resources.h"
+
+// Application info
+resource 'appInfo' (0) {
+    "RustChain Miner",
+    'RtCh',
+    0x00000100,  // Version 0.1
+    0,
+    kAppInfoFlags,
+    kAppInfoDefault
+};
+
+// Main Form
+resource 'form' (MainForm) {
+    modal,
+    saveBehind,
+    0, 0, 160, 160,
+    "RustChain v0.1",
+    0,
+    {
+        // Status Label
+        label, 10, 10, 140, 12,
+        "Status: Idle",
+        MainFormStatusLabel,
+        0,
+        0,
+        kFontIDStdFont,
+        leftAlign,
+        noUnderline,
+        false,
+        0,
+        0
+    },
+    {
+        // CPU Info Label
+        label, 10, 30, 140, 12,
+        "CPU: DragonBall @ 16 MHz",
+        MainFormCpuLabel,
+        0,
+        0,
+        kFontIDStdFont,
+        leftAlign,
+        noUnderline,
+        false,
+        0,
+        0
+    },
+    {
+        // RAM Info Label
+        label, 10, 45, 140, 12,
+        "RAM: 512 KB",
+        MainFormRamLabel,
+        0,
+        0,
+        kFontIDStdFont,
+        leftAlign,
+        noUnderline,
+        false,
+        0,
+        0
+    },
+    {
+        // Epoch Timer Label
+        label, 10, 60, 140, 12,
+        "Epoch: --:--",
+        MainFormEpochLabel,
+        0,
+        0,
+        kFontIDStdFont,
+        leftAlign,
+        noUnderline,
+        false,
+        0,
+        0
+    },
+    {
+        // Balance Label
+        label, 10, 75, 140, 12,
+        "Earned: 0.0000 RTC",
+        MainFormBalanceLabel,
+        0,
+        0,
+        kFontIDStdFont,
+        leftAlign,
+        noUnderline,
+        false,
+        0,
+        0
+    },
+    {
+        // Network Label
+        label, 10, 90, 140, 12,
+        "Net: Serial (9600)",
+        MainFormNetLabel,
+        0,
+        0,
+        kFontIDStdFont,
+        leftAlign,
+        noUnderline,
+        false,
+        0,
+        0
+    },
+    {
+        // Start Button
+        button, 10, 120, 40, 15,
+        "Start",
+        MainFormStartButton,
+        0,
+        0,
+        kFontIDStdFont,
+        leftAlign,
+        noUnderline,
+        false,
+        0,
+        0
+    },
+    {
+        // Stop Button
+        button, 60, 120, 40, 15,
+        "Stop",
+        MainFormStopButton,
+        0,
+        0,
+        kFontIDStdFont,
+        leftAlign,
+        noUnderline,
+        false,
+        0,
+        0
+    },
+    {
+        // Menu Button
+        button, 110, 120, 40, 15,
+        "Menu",
+        MainFormMenuButton,
+        0,
+        0,
+        kFontIDStdFont,
+        leftAlign,
+        noUnderline,
+        false,
+        0,
+        0
+    }
+};
+
+// Error Alert
+resource 'alert' (ErrorAlert) {
+    "Error",
+    "An error occurred. Please try again.",
+    1,
+    { "OK" }
+};
+
+// Success Alert
+resource 'alert' (SuccessAlert) {
+    "Success",
+    "Attestation successful!",
+    1,
+    { "OK" }
+};
+
+// Attestation Alert
+resource 'alert' (AttestationAlert) {
+    "Attestation",
+    "Sending attestation...",
+    1,
+    { "OK" }
+};
+
+// Menu Bar
+resource 'menu' (MainMenu) {
+    {
+        // File Menu
+        "File",
+        {
+            { "Wallet...", kNoChar, MenuItemWallet, 0, 0 },
+            { "Settings...", kNoChar, MenuItemSettings, 0, 0 },
+            separator,
+            { "Quit", kNoChar, MenuItemQuit, 0, 0 }
+        }
+    },
+    {
+        // Help Menu
+        "Help",
+        {
+            { "About...", kNoChar, MenuItemAbout, 0, 0 }
+        }
+    }
+};
+
+// Application Icon (placeholder - would need actual bitmap)
+// resource 'icon' (IconApp) {
+//     // 16x16 monochrome icon data
+// };
