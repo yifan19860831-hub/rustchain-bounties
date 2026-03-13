@@ -1,0 +1,143 @@
+﻿Ferranti Mark 1* Paper Tape Programs
+=====================================
+
+This directory contains paper tape programs for the Ferranti Mark 1* miner.
+
+Program Format:
+- Each line represents one 20-bit word
+- Format: OPCODE (5 bits) | ADDRESS (10 bits) | B-LINE (3 bits) | UNUSED (2 bits)
+- Octal notation for compatibility with 1950s programming practices
+
+================================================================================
+MINER_PROGRAM.txt - Mining Loop
+================================================================================
+
+Address  Contents (Octal)  Instruction           Description
+------   ----------------  --------------------  --------------------------------
+000      04000             LOAD_B B0=0           Initialize B-line 0
+001      04101             LOAD_B B1=1           Set B1 to 1 (counter increment)
+010      00050             LOAD FINGERPRINT      Load hardware fingerprint
+011      04202             LOAD_B B2=2           Set B2 to 2 (nonce storage)
+012      00052             LOAD NONCE            Load current nonce
+013      00351             ADD ONE               Increment nonce
+014      00252             STORE NONCE           Store updated nonce
+015      02050             XOR FINGERPRINT       XOR with fingerprint
+016      02153             AND MASK              Apply difficulty mask
+017      01054             COMPARE DIFF          Compare with difficulty
+020      07025             JZER FOUND            Jump if share found
+021      07012             JUMP LOOP             Jump back to load nonce
+022      00000             STOP                  (shouldn't reach here)
+
+FOUND:
+023      00260             STORE SHARE_DATA      Store share data
+024      01560             OUTPUT                Output to paper tape
+025      01661             HOOT                  Audio proof
+026      07012             JUMP LOOP             Continue mining
+
+DATA AREA:
+050      [FINGERPRINT]     FINGERPRINT           Hardware fingerprint (16 tubes)
+051      00001             ONE                   Constant: 1
+052      00000             NONCE                 Current nonce (counter)
+053      07777             MASK                  Difficulty mask
+054      00100             DIFF                  Difficulty threshold
+060      00000             SHARE_DATA            Share data storage
+061      00100             HOOT_PITCH            Audio pitch value
+
+================================================================================
+TEST_SEQUENCES.txt - Test Programs
+================================================================================
+
+Test 1: Basic Arithmetic
+------------------------
+000      00010             LOAD VALUE1           Load first value
+001      00311             ADD VALUE2            Add second value
+002      00212             STORE RESULT          Store result
+003      00000             STOP                  Halt
+
+010      00100             VALUE1: 64
+011      00044             VALUE2: 36
+012      00000             RESULT: (will be 100)
+
+Test 2: B-Line Indexing
+-----------------------
+000      04105             LOAD_B B1=5           Set B1 to 5
+001      04210             LOAD_B B2=10          Set B2 to 10
+002      00020             LOAD BASE             Load with B-line modification
+003      00221             STORE RESULT          Store result
+004      00000             STOP
+
+020      00500             BASE: 500 (with B1: 505)
+021      00000             RESULT: (will be 505)
+
+Test 3: Loop Counter
+--------------------
+000      0410A             LOAD_B B1=10          Set counter to 10
+001      00030             LOAD COUNT            Load current count
+002      00331             ADD ONE               Increment
+003      00230             STORE COUNT           Store back
+004      04332             ADD_B B1,-1           Decrement B1
+005      07001             JNZ LOOP              Jump if not zero
+006      00000             STOP
+
+030      00000             COUNT: 0
+031      00001             ONE: 1
+032      77777             NEG1: -1 (octal)
+
+Test 4: Drum Storage
+--------------------
+000      00040             LOAD PAGE_NUM         Load page number
+001      03050             DRUM_READ             Read from drum
+002      00251             STORE DATA            Store data
+003      00040             LOAD PAGE_NUM         Load page number again
+004      03151             DRUM_WRITE            Write to drum
+005      00000             STOP
+
+040      00005             PAGE_NUM: 5
+050      00000             TEMP: (for drum read)
+051      01234             DATA: 1234 (octal)
+
+================================================================================
+Encoding Reference
+================================================================================
+
+Instruction Format (20 bits):
+鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹攢鈹€鈹€鈹€鈹€鈹€鈹€鈹攢鈹€鈹€鈹€鈹€鈹€鈹?鈹?OP   鈹?ADDRESS 鈹?B-LINE鈹?UNUSED鈹?鈹?4-0  鈹?14-5    鈹?16-15 鈹?19-17鈹?鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹粹攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹粹攢鈹€鈹€鈹€鈹€鈹€鈹€鈹粹攢鈹€鈹€鈹€鈹€鈹€鈹?
+Opcode Values (Octal):
+00 - STOP       10 - AND        20 - XOR (extended)
+01 - LOAD       11 - OR         21 - AND mask (extended)
+02 - STORE      12 - NOT        22 - Compare (extended)
+03 - ADD        13 - SHIFT_L    30 - DRUM_READ (extended)
+04 - SUB        14 - SHIFT_R    31 - DRUM_WRITE (extended)
+05 - MUL        15 - OUTPUT     40 - LOAD_B
+06 - DIV        16 - HOOT       41-43 - B-line ops
+07 - JUMP       17 - TELE_PRINT
+08 - JNEG       20 - RAND
+09 - JZER       21 - INPUT
+
+B-Line Encoding (bits 15-13):
+000 - No modification
+001 - B1
+010 - B2
+011 - B3
+100 - B4
+101 - B5
+110 - B6
+111 - B7
+
+================================================================================
+Usage Notes
+================================================================================
+
+1. Load programs via paper tape reader (simulated)
+2. Programs start at address 000 by default
+3. Data area typically starts at address 050
+4. All values in octal for historical accuracy
+5. B-line 0 always reads as 0 (hardwired)
+
+To run a program:
+1. Load tape into simulator
+2. Set program counter to start address
+3. Execute until STOP instruction
+4. Check results in data area
+
+================================================================================

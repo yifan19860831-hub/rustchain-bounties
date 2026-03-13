@@ -1,0 +1,76 @@
+﻿============================================================
+Ferranti Mark 1* Miner - RustChain Proof-of-Antiquity
+============================================================
+Memory:     1024 words (16 Williams tubes)
+Cycle Time: 1.2 ms
+Year:       1957
+
+Initializing Williams tubes...
+Tube  0:  [----------] Fingerprint: 242C0
+Tube  1:  [######----] Fingerprint: B0348
+Tube  2:  [#######---] Fingerprint: F01DD
+Tube  3:  [#####-----] Fingerprint: 1317D
+Tube  4:  [###-------] Fingerprint: 48E43
+Tube  5:  [###-------] Fingerprint: 9BC83
+Tube  6:  [####------] Fingerprint: 50162
+Tube  7:  [######----] Fingerprint: 9C80C
+Tube  8:  [######----] Fingerprint: 63034
+Tube  9:  [######----] Fingerprint: 95714
+Tube 10:  [####------] Fingerprint: 59C58
+Tube 11:  [######----] Fingerprint: 805F8
+Tube 12:  [########--] Fingerprint: FE4AA
+Tube 13:  [########--] Fingerprint: 09AB8
+Tube 14:  [#######---] Fingerprint: 36A35
+Tube 15:  [#########-] Fingerprint: 20D45
+
+Generating hardware fingerprint from 16 tubes...
+FINGERPRINT: DF01DDB0348242C0
+
+Initializing mining...
+Difficulty: 00100
+
+Mining started...
+
+Iteration 1... no share yet
+Iteration 2... no share yet
+Iteration 3... no share yet
+Iteration 4... no share yet
+Iteration 5... no share yet
+
+Mining complete after 5 iterations (0.02s)
+
+============================================================
+SHARE FOUND!
+============================================================
+Wallet:      RTC4325af95d26d59c3ef025963656d22af638bb96b
+Fingerprint: DF01DDB0348242C0
+Nonce:       00005
+Hash:        00089
+Difficulty:  00100
+Timestamp:   1773404100
+============================================================
+
+[HOOT] Playing audio proof (1 tones)
+[TAPE] Output: SHARE|RTC4325af95d...|00005|00089
+
+Mining session complete. Share submitted via paper tape.
+
+CPU Status:
+  memory_words: 1024
+  num_tubes: 16
+  accumulator: 00000000000000000000
+  mq_register: 0000000000
+  b_lines: ['000', '000', '000', '000', '000', '000', '000', '000']
+  program_counter: 0
+  shares_found: 1
+  paper_tape_outputs: 1
+  hoot_count: 1
+
+============================================================
+Session Statistics
+============================================================
+Total Iterations: 5
+Time Elapsed: 0.02s
+Shares Found: 1
+Hash Rate: ~250 iterations/second (simulated)
+============================================================
