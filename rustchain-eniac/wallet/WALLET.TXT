@@ -1,0 +1,14 @@
+ENIAC RustChain Wallet (1945)
+================================
+
+Wallet Address: RTC4325af95d26d59c3ef025963656d22af638bb96b
+
+Generated: 2026-03-14T03:09:00Z
+Machine: ENIAC (1945)
+Tier: LEGENDARY
+Multiplier: 5.0x
+
+⚠️  BACKUP THIS WALLET TO FLOPPY DISK!
+⚠️  或者刻在石头上，毕竟 ENIAC 时代没有云存储。
+
+Bounty: 200 RTC ($20) - Issue #388
