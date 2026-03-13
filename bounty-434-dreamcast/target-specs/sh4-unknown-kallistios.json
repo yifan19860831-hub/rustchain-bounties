@@ -1,0 +1,26 @@
+{
+  "arch": "sh4",
+  "cpu": "sh4",
+  "data-layout": "e-m:e-p:32:32-i64:64-f80:32-n32",
+  "dynamic-linking": false,
+  "endian": "little",
+  "env": "",
+  "executables": true,
+  "has-thread-local": false,
+  "linker": "sh4-elf-gcc",
+  "linker-flavor": "gcc",
+  "llvm-target": "sh4",
+  "max-atomic-width": 32,
+  "os": "none",
+  "panic-strategy": "abort",
+  "pre-link-args": {
+    "gcc": [
+      "-T", "${KOS_BASE}/ldscripts/sh4elf.x",
+      "-nostartfiles",
+      "-nodefaultlibs"
+    ]
+  },
+  "target-c-int-width": "32",
+  "target-pointer-width": "32",
+  "vendor": "unknown"
+}
