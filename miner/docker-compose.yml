@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  rustchain-miner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rustchain-miner
+    restart: unless-stopped
+    environment:
+      - WALLET_NAME=${WALLET_NAME:-}
+      - NODE_URL=${NODE_URL:-http://localhost:8545}
+    ports:
+      - "8545:8545"
+    volumes:
+      - miner-data:/app/data
+    networks:
+      - rustchain-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8545/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  rustchain-node:
+    image: rustchain/node:latest
+    container_name: rustchain-node
+    restart: unless-stopped
+    ports:
+      - "8545:8545"
+      - "30303:30303"
+    volumes:
+      - node-data:/var/lib/rustchain
+    networks:
+      - rustchain-network
+
+volumes:
+  miner-data:
+    driver: local
+  node-data:
+    driver: local
+
+networks:
+  rustchain-network:
+    driver: bridge
