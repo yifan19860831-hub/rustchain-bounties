@@ -1,0 +1,35 @@
+# RustChain CDC 6600 - .gitignore
+
+# Compiled output
+*.bin
+*.obj
+*.exe
+
+# Build directories
+build/
+dist/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Wallet files (NEVER commit!)
+WALLET.TXT
+*.key
+*.wallet
+
+# Test output
+*.log
+test_output/
+
+# Node modules
+node_modules/
+
+# SIMH files
+simh/
+*.ini
