@@ -1,0 +1,60 @@
+[package]
+name = "rustchain-n64-miner"
+version = "0.1.0"
+edition = "2021"
+authors = ["RustChain Contributors"]
+description = "Nintendo 64 port of the RustChain miner with MIPS R4300i optimization"
+license = "MIT"
+repository = "https://github.com/Scottcjn/rustchain-bounties"
+keywords = ["n64", "nintendo", "mips", "miner", "rustchain", "embedded"]
+categories = ["embedded", "hardware-support"]
+
+[dependencies]
+# Core cryptography
+ed25519 = "2.2"
+ed25519-dalek = "2.0"
+sha2 = "0.10"
+rand_core = "0.6"
+
+# N64-specific dependencies
+n64 = { version = "0.5", optional = true }
+libq = { version = "0.1", optional = true }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Configuration
+toml = "0.8"
+
+# Logging
+log = "0.4"
+
+# HTTP client (for network-enabled flash carts)
+reqwest = { version = "0.11", default-features = false, features = ["rustls-tls"], optional = true }
+
+# Async runtime (optional, for network support)
+tokio = { version = "1", features = ["rt", "time"], optional = true }
+
+[dev-dependencies]
+criterion = "0.5"
+
+[features]
+default = ["std"]
+std = []
+n64-homebrew = ["dep:n64", "dep:libq"]
+network = ["dep:reqwest", "dep:tokio"]
+
+[[bin]]
+name = "rustchain-n64"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.release-small]
+inherits = "release"
+opt-level = "z"

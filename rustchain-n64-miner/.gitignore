@@ -1,0 +1,51 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# N64 ROM files
+*.z64
+*.n64
+*.v64
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dll
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Debug
+*.pdb
+*.exe
+*.out
+
+# Test
+coverage/
+*.gcov
+*.gcda
+*.gcno
+
+# Documentation
+target/doc/
+
+# Temporary
+*.tmp
+*.temp
+*.bak
+
+# Keys (never commit!)
+*.key
+*.pem
+*.bin
+rustchain/
