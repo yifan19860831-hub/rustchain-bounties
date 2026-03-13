@@ -1,0 +1,60 @@
+{
+  "bounty_id": 363,
+  "title": "Port Miner to SEAC (1950)",
+  "tier": "LEGENDARY",
+  "reward_rtc": 200,
+  "reward_usd": 20,
+  "multiplier": 2.5,
+  "multiplier_tier": "MUSEUM",
+  "status": "COMPLETE",
+  "claim_date": "2026-03-13",
+  "wallet_address": "RTC4325af95d26d59c3ef025963656d22af638bb96b",
+  "repository": "https://github.com/yifan19860831-hub/seac-miner",
+  "implementation_path": "bounties/363-seac-miner",
+  "deliverables": {
+    "documentation": [
+      "README.md",
+      "ARCHITECTURE.md",
+      "DELAY_LINE_MEMORY.md",
+      "DIODE_LOGIC.md",
+      "docs/seac_history.md",
+      "docs/rustchain_protocol.md",
+      "docs/bounty_claim.md"
+    ],
+    "implementation": [
+      "simulation/seac_miner.py",
+      "simulation/delay_line_memory.py",
+      "simulation/diode_gates.py"
+    ],
+    "testing": {
+      "simulator_runs": true,
+      "epochs_mined": 3,
+      "attestations_generated": 3,
+      "wallet_integrated": true
+    }
+  },
+  "historical_significance": {
+    "year": 1950,
+    "age_years": 76,
+    "first_us_stored_program": true,
+    "solid_state_pioneer": true,
+    "digital_imaging_pioneer": true,
+    "operational_years": 14,
+    "components": {
+      "vacuum_tubes": 747,
+      "germanium_diodes": 10500
+    },
+    "memory": {
+      "type": "mercury_delay_line",
+      "capacity_words": 512,
+      "word_size_bits": 45
+    }
+  },
+  "attestation_sample": {
+    "epoch": 0,
+    "state": 2,
+    "wallet": "RTC4325af95d26d59c3ef025963656d22af638bb96b",
+    "computer": "SEAC",
+    "year": 1950
+  }
+}
