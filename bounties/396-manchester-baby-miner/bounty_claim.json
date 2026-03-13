@@ -1,0 +1,39 @@
+{
+  "bounty": {
+    "issue_number": 396,
+    "title": "Port Miner to Manchester Baby",
+    "repository": "yifan19860831-hub/rustchain-bounties",
+    "reward_tier": "LEGENDARY",
+    "reward_amount": 200,
+    "reward_currency": "RTC",
+    "reward_usd_value": 20
+  },
+  "claim": {
+    "wallet_address": "RTC4325af95d26d59c3ef025963656d22af638bb96b",
+    "completion_date": "2026-03-13",
+    "submitter": "subagent:910d0287-ad52-4fc7-af56-b3390314f741"
+  },
+  "implementation": {
+    "files": [
+      "README.md",
+      "ssem_miner.asm",
+      "ssem_simulator.py"
+    ],
+    "architecture": "Manchester Baby (SSEM) 1948",
+    "memory_words": 32,
+    "word_size_bits": 32,
+    "instruction_count": 7,
+    "instructions_per_second": 700
+  },
+  "verification": {
+    "simulator_tested": true,
+    "assembly_validated": true,
+    "binary_format_correct": true
+  },
+  "notes": [
+    "First stored-program computer miner implementation",
+    "Demonstrates extreme Proof-of-Antiquity concept",
+    "75+ year old hardware architecture",
+    "Educational and historical significance"
+  ]
+}
