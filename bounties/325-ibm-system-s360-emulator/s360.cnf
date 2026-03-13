@@ -1,0 +1,60 @@
+# Hercules S/360 Simulator Configuration for RustChain Miner
+# ==========================================================
+# This configuration file sets up Hercules to emulate an IBM System/360 Model 30
+# for running the RustChain Proof-of-Antiquity miner.
+
+# Machine type: IBM System/360 Model 30
+ARCHMODE S360
+
+# CPU configuration
+# Model 30 had a simple single-core design
+CPU 1, type=360-30
+
+# Memory: 32KB (typical Model 30 configuration)
+# S/360 addressed memory in bytes
+MAINSTOR 32K
+
+# Clock speed: approximately 1 MHz (for timing accuracy)
+# Note: Hercules runs at host speed, but we simulate timing in software
+# CLOCK 1000000
+
+# Console device
+CONS 1941, telnet=1052
+
+# Card reader (for historical accuracy)
+# DEVNUM 00C1, TYPE=1442
+
+# Line printer
+# DEVNUM 00C2, TYPE=1403
+
+# Disk storage (for program storage)
+# DEVNUM 0190, TYPE=2311
+
+# Network device for RustChain communication
+# Using Hercules TCP/IP passthrough
+# DEVNUM 0200, TYPE=QETH, MAC=02:00:00:12:34:56
+
+# Diagnostic devices for simulator communication
+# DIAG 255: Sleep/yield
+# DIAG 256: Get time
+# DIAG 257: Network send
+# DIAG 258: Network receive
+
+# Load the RustChain miner program
+# Assuming assembler output in miner.bin
+# LOAD miner.bin
+
+# Alternative: Load from card images
+# LOAD miner.pch
+
+# Program entry point
+# ENTRY START
+
+# Hercules-specific settings
+ODYPREFS HERCULES
+HERCLOG hercules.log
+
+# Script to run after initialization
+# SCRIPT s360_init.rc
+
+# End of configuration
