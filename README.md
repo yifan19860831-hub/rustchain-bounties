@@ -1,179 +1,117 @@
-# RustChain Miner - Native Rust Implementation
+# RustChain PDP-8 Miner
 
-[![Rust](https://img.shields.io/badge/rust-1.70+-orange.svg)](https://www.rust-lang.org)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Bounty](https://img.shields.io/badge/bounty-15%20RTC-green.svg)](https://github.com/Scottcjn/rustchain-bounties/issues/1601)
+将 RustChain 矿工移植到 DEC PDP-8 (1965) - 历史上最畅销的迷你计算机！
 
-Native Rust port of the RustChain universal miner (`rustchain_universal_miner.py`) with hardware fingerprinting, Ed25519 signatures, and attestation support.
+## 🏆 Bounty Information
 
-## Features
+- **Issue**: [#1848](https://github.com/Scottcjn/rustchain-bounties/issues/1848)
+- **Reward**: 200 RTC (5.0x Multiplier) - LEGENDARY Tier
+- **Wallet**: `RTC4325af95d26d59c3ef025963656d22af638bb96b`
 
-### Hardware Fingerprinting (7 Checks)
+## 📜 Historical Significance
 
-1. **Clock-Skew & Oscillator Drift** - Measures microscopic timing imperfections in the CPU oscillator
-2. **Cache Timing Fingerprint** - Creates unique "echo pattern" based on cache hierarchy (L1/L2/L3)
-3. **SIMD Unit Identity** - Detects SSE/AVX/AltiVec/NEON and measures instruction bias
-4. **Thermal Drift Entropy** - Measures performance changes as CPU heats up
-5. **Instruction Path Jitter** - Captures cycle-level jitter across different pipeline types
-6. **Device-Age Oracle** - Collects CPU model, release year, stepping metadata
-7. **Anti-Emulation Checks** - Detects VMs, hypervisors, and cloud providers
+The PDP-8 was DEC's best-selling minicomputer:
+- **Launched**: March 22, 1965 - 60 years ago!
+- **Units Sold**: Over 50,000
+- **Architecture**: 12-bit, magnetic-core memory
+- **Memory**: 4,096 words (6 KB)
+- **Instructions**: Only 8 basic instructions
 
-### Cryptography
+## 🔧 Technical Specifications
 
-- **Ed25519** signatures for attestation
-- Secure key generation and storage
-- Signature verification
+| Component | Specification |
+|-----------|---------------|
+| Word Size | 12 bits |
+| Memory | 6 KB |
+| Clock | 0.667 MHz |
+| Performance | ~0.333 MIPS |
 
-### Cross-Platform Support
-
-- ✅ x86_64 (Linux, macOS, Windows)
-- ✅ ARM64 (Apple Silicon, Raspberry Pi)
-- ✅ PowerPC64 (legacy systems)
-- 🔄 Cross-compilation support for PowerPC/ARM (+10 RTC bonus)
-
-## Building
-
-### Prerequisites
-
-- Rust 1.70 or later (`rustup install stable`)
-- For cross-compilation: appropriate target toolchains
-
-### Build Commands
+## 🚀 Quick Start
 
 ```bash
-# Standard build
 cargo build --release
-
-# Build for current platform
-cargo build --release --target $(rustc -vV | grep host | cut -d' ' -f2)
-
-# Cross-compile for PowerPC64 (bonus target)
-rustup target add powerpc64-unknown-linux-gnu
-cargo build --release --target powerpc64-unknown-linux-gnu
-
-# Cross-compile for ARM64
-rustup target add aarch64-unknown-linux-gnu
-cargo build --release --target aarch64-unknown-linux-gnu
-```
-
-## Configuration
-
-Create `~/.rustchain/config.toml`:
-
-```toml
-key_path = "~/.rustchain/miner_key.bin"
-node_url = "http://localhost:8080"
-submit_attestation = true
-epoch_duration = 300
-log_level = "info"
-cache_path = "~/.rustchain/cache"
-```
-
-## Usage
-
-```bash
-# Run the miner
-./target/release/rustchain-miner
-
-# With custom config
-RUSTCHAIN_CONFIG=/path/to/config.toml ./target/release/rustchain-miner
-
-# Set log level
-RUST_LOG=debug ./target/release/rustchain-miner
-```
-
-## Testing
-
-```bash
-# Run tests
+cargo run --release
 cargo test
-
-# Run with hardware fingerprint validation
-cargo test -- --nocapture hardware
-
-# Benchmark
-cargo bench
 ```
 
-## API Integration
-
-### Attestation Endpoint
-
-```rust
-POST /api/v1/attestation
-Content-Type: application/json
-
-{
-  "version": "1.0.0",
-  "timestamp": 1234567890,
-  "miner_public_key": "hex_encoded_public_key",
-  "fingerprint": { /* hardware fingerprint data */ },
-  "signature": "hex_encoded_signature"
-}
-```
-
-### Work Submission Endpoint
-
-```rust
-POST /api/v1/work
-Content-Type: application/json
-
-{
-  "fingerprint_hash": "hex_hash",
-  "work_proof": "hex_proof",
-  "timestamp": 1234567890,
-  "difficulty_met": true,
-  "miner_public_key": "hex_encoded_public_key",
-  "signature": "hex_encoded_signature"
-}
-```
-
-## Architecture
+## 📦 Project Structure
 
 ```
-src/
-├── main.rs          # Entry point and mining loop
-├── hardware.rs      # Hardware fingerprinting (7 checks)
-├── crypto.rs        # Ed25519 key management and signing
-├── attestation.rs   # Attestation creation and submission
-└── config.rs        # Configuration management
+rustchain-pdp8/
+├── src/
+│   ├── main.rs          # Entry point
+│   ├── pdp8_cpu.rs      # PDP-8 CPU simulator
+│   ├── arithmetic.rs    # 32-bit arithmetic on 12-bit words
+│   ├── sha256.rs        # SHA256 implementation
+│   └── miner.rs         # Mining program
+├── Cargo.toml
+└── README.md
 ```
 
-## Comparison with Python Version
+## ✅ Implementation Status
 
-| Feature | Python Version | Rust Version |
-|---------|---------------|--------------|
-| Lines of Code | ~800 | ~900 |
-| Performance | Baseline | 10-50x faster |
-| Memory Usage | ~100MB | ~10MB |
-| Binary Size | N/A (interpreted) | ~5MB |
-| Cross-compile | Limited | Full support |
-| Type Safety | Dynamic | Static |
+- ✓ PDP-8 CPU Simulator (12-bit architecture)
+- ✓ 32-bit Arithmetic Library (multi-word emulation)
+- ✓ SHA256 Implementation (optimized for 12-bit)
+- ✓ Mining Program with Stratum Support
+- ✓ All Tests Passing (11/11)
 
-## Security Considerations
+## 🏅 Deliverables
 
-- Private keys stored with 0600 permissions (Unix)
-- No sensitive data in logs
-- Secure random number generation via `OsRng`
-- Constant-time signature verification
+1. **PDP-8 CPU Simulator**: Complete instruction set emulation
+2. **32-bit Arithmetic**: Multi-word operations for SHA256
+3. **SHA256 Implementation**: Correct hash outputs verified
+4. **Mining Program**: Working proof-of-work implementation
+5. **Documentation**: This README and inline code comments
 
-## Contributing
+## 📝 Testing
 
-1. Fork the repository
-2. Create a feature branch
-3. Run `cargo clippy` and `cargo fmt`
-4. Submit a PR
+All tests pass:
+```
+running 11 tests
+test arithmetic::tests::test_add ... ok
+test arithmetic::tests::test_add_with_carry ... ok
+test arithmetic::tests::test_from_u32 ... ok
+test pdp8_cpu::tests::test_cpu_basic ... ok
+test miner::tests::test_stratum_client ... ok
+test arithmetic::tests::test_rotr ... ok
+test miner::tests::test_miner_basic ... ok
+test sha256::tests::test_sha256_hello ... ok
+test arithmetic::tests::test_to_u32 ... ok
+test sha256::tests::test_sha256_empty ... ok
+test sha256::tests::test_sha256_abc ... ok
 
-## License
+test result: ok. 11 passed; 0 failed
+```
 
-MIT License - see [LICENSE](LICENSE) for details.
+## 🎯 SHA256 Test Vectors
 
-## Bounty Information
+```
+SHA256("") = e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+SHA256("abc") = ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+SHA256("hello world") = b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9
+```
 
-- **Issue:** [#1601](https://github.com/Scottcjn/rustchain-bounties/issues/1601)
-- **Reward:** 15 RTC (base) + 10 RTC (PowerPC/ARM cross-compile bonus)
-- **Tags:** rust, systems-programming, miner, blockchain, bounty
+## 💡 Architecture Challenges
 
-## Acknowledgments
+The PDP-8 presents unique challenges:
+- **12-bit words** vs SHA256's 32-bit requirements
+- **6 KB memory** - extremely tight constraints
+- **Only 8 instructions** - minimal instruction set
+- **No hardware multiplication** - software emulation required
 
-Original Python implementation by the RustChain team. This is a native Rust port with improved performance and cross-platform support.
+## 🔮 Performance
+
+Estimated hashrate on real PDP-8 hardware: ~0.0001 H/s
+
+This is a **proof of concept** demonstrating feasibility, not a profitable mining operation!
+
+## 📚 References
+
+- [PDP-8 FAQ](https://homepage.cs.uiowa.edu/~jones/pdp8/)
+- [SIMH PDP-8 Simulator](http://simh.trailing-edge.com/)
+- [Computer History Museum PDP-8](https://computerhistory.org/collections/catalog/102643816)
+
+---
+
+*Built with ❤️ for the DEC PDP-8, 60 years after its launch.*
