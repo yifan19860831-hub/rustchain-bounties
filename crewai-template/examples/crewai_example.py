@@ -6,8 +6,11 @@ This example shows how to create a CrewAI agent that uses RustChain tools.
 Note: Requires crewai and langchain packages to be installed.
 """
 
+from __future__ import annotations
+
 import os
 import sys
+from typing import Any
 
 # Add parent to path
 sys.path.insert(0, '..')
@@ -19,25 +22,26 @@ from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from rustchain_client.tools import create_rustchain_tools, get_tools_schema
 
 
-def create_rustchain_agent():
+def create_rustchain_agent() -> AgentExecutor:
     """
-    Create a CrewAI-style agent with RustChain tools
+    Create a CrewAI-style agent with RustChain tools.
     
     Returns:
         AgentExecutor: Configured agent with tools
     """
     # Initialize LLM
-    llm = ChatOpenAI(
+    api_key: str | None = os.environ.get("OPENAI_API_KEY")
+    llm: ChatOpenAI = ChatOpenAI(
         model="gpt-4",
-        api_key=os.environ.get("OPENAI_API_KEY"),
+        api_key=api_key,
         temperature=0
     )
     
     # Get tools
-    tools = create_rustchain_tools()
+    tools: list[Any] = create_rustchain_tools()
     
     # Create prompt
-    prompt = ChatPromptTemplate.from_messages([
+    prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages([
         ("system", """You are a RustChain blockchain analyst. 
 Your role is to gather and analyze data from the RustChain network.
 Use the provided tools to fetch real data about the chain.
@@ -47,10 +51,10 @@ Provide accurate, up-to-date information."""),
     ])
     
     # Create agent
-    agent = create_openai_functions_agent(llm, tools, prompt)
+    agent: Any = create_openai_functions_agent(llm, tools, prompt)
     
     # Create executor
-    executor = AgentExecutor(
+    executor: AgentExecutor = AgentExecutor(
         agent=agent,
         tools=tools,
         verbose=True,
@@ -60,8 +64,8 @@ Provide accurate, up-to-date information."""),
     return executor
 
 
-def run_analysis():
-    """Run a sample analysis"""
+def run_analysis() -> None:
+    """Run a sample analysis."""
     # Check for API key
     if not os.environ.get("OPENAI_API_KEY"):
         print("ERROR: OPENAI_API_KEY not set")
@@ -69,13 +73,13 @@ def run_analysis():
         return
     
     print("Creating RustChain Analyst Agent...")
-    executor = create_rustchain_agent()
+    executor: AgentExecutor = create_rustchain_agent()
     
     print("\nRunning analysis: 'What's the current state of the RustChain network?'")
     print("-" * 60)
     
     try:
-        result = executor.invoke({
+        result: dict[str, Any] = executor.invoke({
             "input": "What's the current state of the RustChain network? Include epoch, slot, and miner info."
         })
         print("\n" + "=" * 60)

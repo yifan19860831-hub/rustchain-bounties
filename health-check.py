@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import json
 import requests
 from tabulate import tabulate
 import argparse
+from typing import List, Dict, Any
 
-NODES = [
+NODES: List[str] = [
     "50.28.86.131:8099",
     "50.28.86.153:8099", 
     "76.8.228.245:8099"
 ]
 
-def query_node(node_addr):
+
+def query_node(node_addr: str) -> Dict[str, Any]:
+    """Query a node's health endpoint and return status information."""
     try:
         response = requests.get(f"http://{node_addr}/health", timeout=5)
         response.raise_for_status()
-        data = response.json()
+        data: Dict[str, Any] = response.json()
         
         return {
             "node": node_addr,
@@ -35,19 +40,21 @@ def query_node(node_addr):
             "error": str(e)
         }
 
-def main():
+
+def main() -> None:
+    """Main entry point for the health check CLI."""
     parser = argparse.ArgumentParser(description="RustChain Node Health Check CLI")
     parser.add_argument("--json", action="store_true", help="Output JSON format")
-    args = parser.parse_args()
+    args: argparse.Namespace = parser.parse_args()
 
-    results = [query_node(node) for node in NODES]
+    results: List[Dict[str, Any]] = [query_node(node) for node in NODES]
 
     if args.json:
         print(json.dumps(results, indent=2))
         return
 
-    headers = ["Node", "Status", "Version", "Uptime", "DB RW", "Tip Age"]
-    table_data = [
+    headers: List[str] = ["Node", "Status", "Version", "Uptime", "DB RW", "Tip Age"]
+    table_data: List[List[str]] = [
         [
             res["node"],
             res["status"],

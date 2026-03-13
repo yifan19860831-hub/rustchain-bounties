@@ -4,6 +4,8 @@ Comprehensive Beacon Integration Test
 Tests all major Beacon 2.6 features
 """
 
+from __future__ import annotations
+
 from beacon_skill import AgentIdentity, HeartbeatManager, AtlasManager
 import json
 from datetime import datetime, timezone

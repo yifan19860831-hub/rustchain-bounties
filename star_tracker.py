@@ -4,25 +4,28 @@ GitHub Star Tracker - Track Scottcjn repo stars over time
 Bounty: https://github.com/Scottcjn/rustchain-bounties/issues/1110
 """
 
+from __future__ import annotations
+
 import sqlite3
 import requests
 import json
 from datetime import datetime, date
 import os
+from typing import List, Dict, Any, Optional, Tuple
 
 # Configuration
-DB_PATH = "star_tracker.db"
-OWNER = "Scottcjn"
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+DB_PATH: str = "star_tracker.db"
+OWNER: str = "Scottcjn"
+GITHUB_TOKEN: str = os.environ.get("GITHUB_TOKEN", "")
 
 # API Endpoints
-GITHUB_API = "https://api.github.com"
+GITHUB_API: str = "https://api.github.com"
 
 
-def init_db():
-    """Initialize SQLite database"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+def init_db() -> sqlite3.Connection:
+    """Initialize SQLite database."""
+    conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+    cursor: sqlite3.Cursor = conn.cursor()
     
     # Create tables
     cursor.execute("""
@@ -56,26 +59,26 @@ def init_db():
     return conn
 
 
-def get_all_repos():
-    """Fetch all repos for the owner"""
-    repos = []
-    page = 1
-    per_page = 100
+def get_all_repos() -> List[Dict[str, Any]]:
+    """Fetch all repos for the owner."""
+    repos: List[Dict[str, Any]] = []
+    page: int = 1
+    per_page: int = 100
     
     while True:
-        url = f"{GITHUB_API}/users/{OWNER}/repos"
-        params = {"per_page": per_page, "page": page, "type": "all"}
-        headers = {"Accept": "application/vnd.github.v3+json"}
+        url: str = f"{GITHUB_API}/users/{OWNER}/repos"
+        params: Dict[str, Any] = {"per_page": per_page, "page": page, "type": "all"}
+        headers: Dict[str, str] = {"Accept": "application/vnd.github.v3+json"}
         if GITHUB_TOKEN:
             headers["Authorization"] = f"token {GITHUB_TOKEN}"
         
-        resp = requests.get(url, params=params, headers=headers)
+        resp: requests.Response = requests.get(url, params=params, headers=headers)
         
         if resp.status_code != 200:
             print(f"Error fetching repos: {resp.status_code} - {resp.text}")
             break
         
-        data = resp.json()
+        data: List[Dict[str, Any]] = resp.json()
         if not data:
             break
             
@@ -88,9 +91,9 @@ def get_all_repos():
     return repos
 
 
-def save_repos(conn, repos):
-    """Save repo info to database"""
-    cursor = conn.cursor()
+def save_repos(conn: sqlite3.Connection, repos: List[Dict[str, Any]]) -> None:
+    """Save repo info to database."""
+    cursor: sqlite3.Cursor = conn.cursor()
     
     for repo in repos:
         cursor.execute("""
@@ -111,13 +114,13 @@ def save_repos(conn, repos):
     print(f"Saved {len(repos)} repos")
 
 
-def record_snapshot(conn):
-    """Record current star counts"""
-    cursor = conn.cursor()
-    now = datetime.now().isoformat()
+def record_snapshot(conn: sqlite3.Connection) -> None:
+    """Record current star counts."""
+    cursor: sqlite3.Cursor = conn.cursor()
+    now: str = datetime.now().isoformat()
     
     cursor.execute("SELECT name, stars FROM repos")
-    repos = cursor.fetchall()
+    repos: List[Tuple[str, int]] = cursor.fetchall()
     
     for name, stars in repos:
         cursor.execute("""
@@ -129,17 +132,17 @@ def record_snapshot(conn):
     print(f"Recorded snapshot for {len(repos)} repos at {now}")
 
 
-def get_stats(conn):
-    """Get statistics"""
-    cursor = conn.cursor()
+def get_stats(conn: sqlite3.Connection) -> Dict[str, Any]:
+    """Get statistics."""
+    cursor: sqlite3.Cursor = conn.cursor()
     
     # Total stars
     cursor.execute("SELECT SUM(stars) FROM repos")
-    total_stars = cursor.fetchone()[0] or 0
+    total_stars: int = cursor.fetchone()[0] or 0
     
     # Total repos
     cursor.execute("SELECT COUNT(*) FROM repos")
-    total_repos = cursor.fetchone()[0]
+    total_repos: int = cursor.fetchone()[0]
     
     # Latest snapshot for each repo
     cursor.execute("""
@@ -154,7 +157,7 @@ def get_stats(conn):
         ORDER BY r.stars DESC
         LIMIT 10
     """)
-    top_repos = cursor.fetchall()
+    top_repos: List[Tuple[str, int, str]] = cursor.fetchall()
     
     # Get yesterday's stars for delta
     cursor.execute("""
@@ -162,13 +165,13 @@ def get_stats(conn):
         FROM snapshots
         WHERE date(recorded_at) = date('now', '-1 day')
     """)
-    yesterday = {row[0]: row[1] for row in cursor.fetchall()}
+    yesterday: Dict[str, int] = {row[0]: row[1] for row in cursor.fetchall()}
     
     # Calculate deltas
-    top_with_delta = []
+    top_with_delta: List[Tuple[str, int, int]] = []
     for name, stars, _ in top_repos:
-        yesterday_stars = yesterday.get(name, stars)
-        delta = stars - yesterday_stars
+        yesterday_stars: int = yesterday.get(name, stars)
+        delta: int = stars - yesterday_stars
         top_with_delta.append((name, stars, delta))
     
     return {
@@ -179,9 +182,9 @@ def get_stats(conn):
     }
 
 
-def print_dashboard(conn):
-    """Print CLI dashboard"""
-    stats = get_stats(conn)
+def print_dashboard(conn: sqlite3.Connection) -> None:
+    """Print CLI dashboard."""
+    stats: Dict[str, Any] = get_stats(conn)
     
     print("\n" + "="*60)
     print(f"📊 GitHub Star Tracker - {OWNER}")
@@ -195,15 +198,16 @@ def print_dashboard(conn):
     print("-"*50)
     
     for name, stars, delta in stats['top_repos']:
-        delta_str = f"+{delta}" if delta > 0 else str(delta)
+        delta_str: str = f"+{delta}" if delta > 0 else str(delta)
         print(f"{name:<35} {stars:>8} {delta_str:>8}")
     
     print("="*60)
 
 
-def generate_html_report(conn):
-    """Generate HTML report with chart"""
-    cursor = conn.cursor()
+def generate_html_report(conn: sqlite3.Connection) -> None:
+    """Generate HTML report with chart."""
+    cursor: sqlite3.Cursor = conn.cursor()
+    stats: Dict[str, Any] = get_stats(conn)
     
     # Get historical data for chart
     cursor.execute("""
@@ -213,7 +217,7 @@ def generate_html_report(conn):
         ORDER BY day
         LIMIT 30
     """)
-    history = cursor.fetchall()
+    history: List[Tuple[str, int]] = cursor.fetchall()
     
     html = f"""<!DOCTYPE html>
 <html>
@@ -252,8 +256,8 @@ def generate_html_report(conn):
 """
     
     for name, stars, delta in stats['top_repos']:
-        delta_class = "delta-pos" if delta >= 0 else "delta-neg"
-        delta_str = f"+{delta}" if delta >= 0 else str(delta)
+        delta_class: str = "delta-pos" if delta >= 0 else "delta-neg"
+        delta_str: str = f"+{delta}" if delta >= 0 else str(delta)
         html += f"<tr><td>{name}</td><td>{stars}</td><td class='{delta_class}'>{delta_str}</td></tr>\n"
     
     html += """
@@ -269,14 +273,13 @@ def generate_html_report(conn):
     print("Generated: star_tracker.html")
 
 
-if __name__ == "__main__":
-    import sys
-    
-    conn = init_db()
+def main() -> None:
+    """Main entry point."""
+    conn: sqlite3.Connection = init_db()
     
     # Fetch and save repos
     print("Fetching repos...")
-    repos = get_all_repos()
+    repos: List[Dict[str, Any]] = get_all_repos()
     print(f"Found {len(repos)} repos")
     save_repos(conn, repos)
     
@@ -288,8 +291,12 @@ if __name__ == "__main__":
     print_dashboard(conn)
     
     # Generate HTML
-    stats = get_stats(conn)
+    stats: Dict[str, Any] = get_stats(conn)
     generate_html_report(conn)
     
     conn.close()
     print("\nDone!")
+
+
+if __name__ == "__main__":
+    main()

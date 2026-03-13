@@ -6,10 +6,15 @@ This example shows how to create a LangGraph workflow for RustChain data collect
 Note: Requires langgraph package to be installed.
 """
 
+from __future__ import annotations
+
 import sys
+from typing import Annotated, Any
+
 sys.path.insert(0, '..')
 
-from typing import TypedDict, Annotated
+from typing import TypedDict
+
 from langgraph.graph import StateGraph, END
 from langgraph.graph.message import add_messages
 
@@ -18,64 +23,65 @@ from rustchain_client import RustChainClient
 
 # Define state
 class ChainState(TypedDict):
-    """State for the RustChain analysis graph"""
+    """State for the RustChain analysis graph."""
+    
     wallet: str
-    health: dict
-    epoch: dict
-    miners: list
-    balance: dict
+    health: dict[str, Any]
+    epoch: dict[str, Any]
+    miners: list[dict[str, Any]]
+    balance: dict[str, Any]
     messages: Annotated[list, add_messages]
 
 
-def check_health(state: ChainState):
-    """Check node health"""
+def check_health(state: ChainState) -> dict[str, dict[str, Any]]:
+    """Check node health."""
     print("Step 1: Checking node health...")
-    client = RustChainClient()
-    health = client.health()
+    client: RustChainClient = RustChainClient()
+    health: dict[str, Any] = client.health()
     print(f"   Health OK: {health.get('ok')}")
     return {"health": health}
 
 
-def get_epoch(state: ChainState):
-    """Get epoch info"""
+def get_epoch(state: ChainState) -> dict[str, dict[str, Any]]:
+    """Get epoch info."""
     print("Step 2: Getting epoch info...")
-    client = RustChainClient()
-    epoch = client.get_epoch()
+    client: RustChainClient = RustChainClient()
+    epoch: dict[str, Any] = client.get_epoch()
     print(f"   Epoch: {epoch.get('epoch')}, Slot: {epoch.get('slot')}")
     return {"epoch": epoch}
 
 
-def get_miners(state: ChainState):
-    """Get miner list"""
+def get_miners(state: ChainState) -> dict[str, list[dict[str, Any]]]:
+    """Get miner list."""
     print("Step 3: Getting miners...")
-    client = RustChainClient()
-    miners = client.get_miners()
+    client: RustChainClient = RustChainClient()
+    miners: list[dict[str, Any]] = client.get_miners()
     print(f"   Active miners: {len(miners)}")
     return {"miners": miners}
 
 
-def get_balance(state: ChainState):
-    """Get wallet balance"""
+def get_balance(state: ChainState) -> dict[str, dict[str, Any]]:
+    """Get wallet balance."""
     print(f"Step 4: Checking balance for {state.get('wallet', 'default')}...")
-    client = RustChainClient()
-    wallet = state.get('wallet', 'aric-saxp-alpha')
+    client: RustChainClient = RustChainClient()
+    wallet: str = state.get('wallet', 'aric-saxp-alpha')
     try:
-        balance = client.get_balance(wallet)
+        balance: dict[str, Any] = client.get_balance(wallet)
         print(f"   Balance result: {balance}")
     except Exception as e:
         balance = {"error": str(e)}
     return {"balance": balance}
 
 
-def create_chain_graph():
+def create_chain_graph() -> Any:
     """
-    Create the LangGraph workflow
+    Create the LangGraph workflow.
     
     Returns:
         Compiled graph
     """
     # Create graph
-    graph = StateGraph(ChainState)
+    graph: StateGraph = StateGraph(ChainState)
     
     # Add nodes
     graph.add_node("health", check_health)
@@ -94,8 +100,8 @@ def create_chain_graph():
     return graph.compile()
 
 
-def run_graph():
-    """Run the graph"""
+def run_graph() -> None:
+    """Run the graph."""
     print("=" * 60)
     print("RustChain LangGraph Example")
     print("=" * 60)
@@ -108,20 +114,24 @@ def run_graph():
         return
     
     # Create and run graph
-    app = create_chain_graph()
+    app: Any = create_chain_graph()
     
     print("\nRunning graph...")
-    result = app.invoke({
+    result: dict[str, Any] = app.invoke({
         "wallet": "aric-saxp-alpha",
         "messages": []
     })
     
     print("\n" + "=" * 60)
     print("RESULT:")
-    print(f"  Health: {result.get('health', {}).get('ok')}")
-    print(f"  Epoch: {result.get('epoch', {}).get('epoch')}")
-    print(f"  Miners: {len(result.get('miners', []))}")
-    print(f"  Balance: {result.get('balance')}")
+    health_ok: Any = result.get('health', {}).get('ok')
+    epoch_num: Any = result.get('epoch', {}).get('epoch')
+    miners_count: int = len(result.get('miners', []))
+    balance_result: Any = result.get('balance')
+    print(f"  Health: {health_ok}")
+    print(f"  Epoch: {epoch_num}")
+    print(f"  Miners: {miners_count}")
+    print(f"  Balance: {balance_result}")
     print("=" * 60)
 
 

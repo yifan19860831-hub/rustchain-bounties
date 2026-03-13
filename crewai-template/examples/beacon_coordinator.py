@@ -8,16 +8,19 @@ through BoTTube's social graph API.
 For the +50 RTC bonus: Real Beacon integration path
 """
 
+from __future__ import annotations
+
 import json
 import time
 import uuid
-from typing import Dict, Any, Optional, Callable
 from dataclasses import dataclass, asdict
 from enum import Enum
+from typing import Any, Callable
 
 
 class MessageType(Enum):
-    """Beacon message types"""
+    """Beacon message types."""
+    
     REQUEST = "request"
     RESPONSE = "response"
     HEARTBEAT = "heartbeat"
@@ -26,38 +29,52 @@ class MessageType(Enum):
 
 @dataclass
 class BeaconMessage:
-    """A Beacon protocol message"""
+    """A Beacon protocol message."""
+    
     msg_id: str
     sender: str
     recipient: str
     msg_type: MessageType
     action: str
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
     timestamp: float
-    thread_id: Optional[str] = None
+    thread_id: str | None = None
 
 
 class BeaconCoordinator:
     """
-    Coordinates agent-to-agent communication via Beacon protocol
+    Coordinates agent-to-agent communication via Beacon protocol.
     
     This is a demonstration of the coordination pattern.
     In production, this would use the actual BoTTube Beacon API.
     """
     
-    def __init__(self, agent_id: str):
-        self.agent_id = agent_id
+    def __init__(self, agent_id: str) -> None:
+        """Initialize the beacon coordinator."""
+        self.agent_id: str = agent_id
         self.inbox: list[BeaconMessage] = []
         self.outbox: list[BeaconMessage] = []
-        self.handlers: Dict[str, Callable] = {}
+        self.handlers: dict[str, Callable[[dict[str, Any]], Any]] = {}
     
-    def register_handler(self, action: str, handler: Callable):
-        """Register a handler for a specific action"""
+    def register_handler(self, action: str, handler: Callable[[dict[str, Any]], Any]) -> None:
+        """Register a handler for a specific action."""
         self.handlers[action] = handler
     
-    def send_message(self, recipient: str, action: str, payload: Dict[str, Any]):
-        """Send a message to another agent"""
-        msg = BeaconMessage(
+    def send_message(
+        self, recipient: str, action: str, payload: dict[str, Any]
+    ) -> str:
+        """
+        Send a message to another agent.
+        
+        Args:
+            recipient: Target agent ID
+            action: Action type
+            payload: Message payload
+            
+        Returns:
+            Message ID
+        """
+        msg: BeaconMessage = BeaconMessage(
             msg_id=str(uuid.uuid4()),
             sender=self.agent_id,
             recipient=recipient,
@@ -69,14 +86,19 @@ class BeaconCoordinator:
         self.outbox.append(msg)
         return msg.msg_id
     
-    def receive_message(self, msg: BeaconMessage):
-        """Receive and process a message"""
+    def receive_message(self, msg: BeaconMessage) -> None:
+        """
+        Receive and process a message.
+        
+        Args:
+            msg: Beacon message to process
+        """
         self.inbox.append(msg)
         
         # Process with handler if available
         if msg.action in self.handlers:
-            handler = self.handlers[msg.action]
-            result = handler(msg.payload)
+            handler: Callable[[dict[str, Any]], Any] = self.handlers[msg.action]
+            result: Any = handler(msg.payload)
             # Send response
             self.send_message(
                 recipient=msg.sender,
@@ -84,19 +106,22 @@ class BeaconCoordinator:
                 payload={"original_msg_id": msg.msg_id, "result": result}
             )
     
-    def process_inbox(self):
-        """Process all pending messages"""
+    def process_inbox(self) -> None:
+        """Process all pending messages."""
         for msg in self.inbox:
             if msg.recipient == self.agent_id and msg.action in self.handlers:
-                handler = self.handlers[msg.action]
+                handler: Callable[[dict[str, Any]], Any] = self.handlers[msg.action]
                 handler(msg.payload)
         self.inbox.clear()
     
-    def poll_for_messages(self, beacon_channel: str = "default"):
+    def poll_for_messages(self, beacon_channel: str = "default") -> None:
         """
-        Poll Beacon channel for new messages
+        Poll Beacon channel for new messages.
         
-        In production: This would call the BoTTube Beacon API
+        In production: This would call the BoTTube Beacon API.
+        
+        Args:
+            beacon_channel: Channel to poll for messages
         """
         # Placeholder - would call actual API
         pass

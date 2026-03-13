@@ -4,6 +4,8 @@ Beacon Integration Demo for OpenClaw AI Agents
 Demonstrates heartbeat, mayday, and contract functionality
 """
 
+from __future__ import annotations
+
 from beacon_skill import AgentIdentity, HeartbeatManager, AtlasManager
 from datetime import datetime, timezone
 import json

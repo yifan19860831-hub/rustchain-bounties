@@ -4,23 +4,26 @@ LangChain Tools for RustChain and BoTTube
 These tools can be used with CrewAI, LangGraph, or any LangChain-based agent.
 """
 
-from typing import Optional
+from __future__ import annotations
+
+from typing import Any
+
 from langchain.tools import Tool
 from langchain_core.utils.function_calling import convert_to_openai_tool
 
 from rustchain_client import RustChainClient, BoTTubeClient
 
 
-def create_rustchain_tools():
+def create_rustchain_tools() -> list[Tool]:
     """
-    Create LangChain tools from RustChain client methods
+    Create LangChain tools from RustChain client methods.
     
     Returns:
-        list: List of LangChain Tool objects
+        List of LangChain Tool objects
     """
-    client = RustChainClient()
+    client: RustChainClient = RustChainClient()
     
-    tools = [
+    tools: list[Tool] = [
         Tool(
             name="rustchain_health",
             description="Check RustChain node health status. Returns ok, version, uptime, etc.",
@@ -46,16 +49,16 @@ def create_rustchain_tools():
     return tools
 
 
-def create_bottube_tools():
+def create_bottube_tools() -> list[Tool]:
     """
-    Create LangChain tools from BoTTube client methods
+    Create LangChain tools from BoTTube client methods.
     
     Returns:
-        list: List of LangChain Tool objects
+        List of LangChain Tool objects
     """
-    client = BoTTubeClient()
+    client: BoTTubeClient = BoTTubeClient()
     
-    tools = [
+    tools: list[Tool] = [
         Tool(
             name="bottube_search",
             description="Search videos on BoTTube. Input: search query string",
@@ -71,23 +74,25 @@ def create_bottube_tools():
     return tools
 
 
-def get_all_tools():
+def get_all_tools() -> list[Tool]:
     """
-    Get all RustChain and BoTTube tools
+    Get all RustChain and BoTTube tools.
     
     Returns:
-        list: Combined list of tools
+        Combined list of tools
     """
-    return create_rustchain_tools() + create_bottube_tools()
+    rustchain_tools: list[Tool] = create_rustchain_tools()
+    bottube_tools: list[Tool] = create_bottube_tools()
+    return rustchain_tools + bottube_tools
 
 
 # OpenAI function calling format (for newer LangChain versions)
-def get_tools_schema():
+def get_tools_schema() -> list[dict[str, Any]]:
     """
-    Get tools in OpenAI function calling format
+    Get tools in OpenAI function calling format.
     
     Returns:
-        list: Tool schemas for OpenAI API
+        Tool schemas for OpenAI API
     """
-    tools = get_all_tools()
+    tools: list[Tool] = get_all_tools()
     return [convert_to_openai_tool(tool) for tool in tools]

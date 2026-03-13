@@ -9,6 +9,8 @@ Author: DONG (godong0128)
 Bounty: Scottcjn/rustchain-bounties#158 (100 RTC)
 """
 
+from __future__ import annotations
+
 import json
 import sys
 import time
