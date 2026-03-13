@@ -20,7 +20,21 @@ impl RustChainClient {
         })
     }
 
-    /// Get the base URL.
+    /// Get the base URL of the RustChain node.
+    ///
+    /// Returns the configured node URL without trailing slashes.
+    /// This is used for constructing full endpoint URLs.
+    ///
+    /// # Returns
+    ///
+    /// A string slice containing the base URL (e.g., "https://node.rustchain.org")
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let client = RustChainClient::new("https://node.rustchain.org")?;
+    /// assert_eq!(client.base_url(), "https://node.rustchain.org");
+    /// ```
     #[allow(dead_code)]
     pub fn base_url(&self) -> &str {
         &self.base_url

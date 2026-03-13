@@ -48,7 +48,31 @@ pub fn classify(brand: &str) -> (&'static str, &'static str) {
     ("x86_64", "modern")
 }
 
-/// Get the antiquity multiplier for a given device_arch.
+/// Get the antiquity multiplier for a given device architecture.
+///
+/// Vintage hardware receives higher multipliers to reward older machines
+/// contributing to the network. This is a core part of the RIP-PoA incentive model.
+///
+/// # Arguments
+///
+/// * `device_arch` - The architecture identifier (e.g., "g4", "g5", "apple_silicon")
+///
+/// # Returns
+///
+/// A multiplier value:
+/// - G4: 2.5x (highest reward for vintage PowerPC)
+/// - G5: 2.0x
+/// - G3: 1.8x
+/// - Apple Silicon: 1.2x
+/// - Core 2 Duo: 1.3x
+/// - Default: 1.0x (modern hardware)
+///
+/// # Example
+///
+/// ```
+/// let multiplier = get_multiplier("g4");
+/// assert_eq!(multiplier, 2.5);
+/// ```
 #[allow(dead_code)]
 pub fn get_multiplier(device_arch: &str) -> f64 {
     match device_arch {

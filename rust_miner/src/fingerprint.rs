@@ -24,6 +24,43 @@ pub struct Fingerprint {
     pub anti_emulation_hash: String,
 }
 
+/// Generate a comprehensive hardware fingerprint for anti-emulation.
+///
+/// # Returns
+///
+/// A Result containing:
+/// - `Ok(String)` - 64-character hex SHA256 hash of all fingerprint components
+/// - `Err(anyhow::Error)` - If hardware detection fails
+///
+/// # Fingerprint Components
+///
+/// This function collects 7 distinct hardware characteristics:
+///
+/// 1. **CPU Architecture** - Processor family (x86_64, ARM, PowerPC, etc.)
+/// 2. **CPU Vendor** - Manufacturer (Intel, AMD, Apple, etc.)
+/// 3. **Cache Timing** - Memory access latency patterns (L1/L2/L3 boundaries)
+/// 4. **Clock Drift** - Oscillator variance measurements
+/// 5. **Instruction Jitter** - CPU instruction timing variations
+/// 6. **Thermal Characteristics** - Heat dissipation patterns
+/// 7. **Anti-Emulation** - VM/hypervisor detection checks
+///
+/// # Security
+///
+/// The combined fingerprint creates a unique hardware signature that is
+/// extremely difficult to emulate in virtual machines. Each component
+/// targets different aspects of physical silicon behavior.
+///
+/// # Usage
+///
+/// Call this function during attestation to prove the miner is running on
+/// genuine vintage hardware rather than emulated environments.
+///
+/// # Example
+///
+/// ```
+/// let fingerprint = generate_fingerprint()?;
+/// println!("Hardware fingerprint: {}", fingerprint);
+/// ```
 pub fn generate_fingerprint() -> anyhow::Result<String> {
     let hw = hardware::detect_hardware();
     

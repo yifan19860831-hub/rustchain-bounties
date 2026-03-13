@@ -14,10 +14,49 @@ pub struct Keypair {
 }
 
 impl Keypair {
+    /// Sign a message using the Ed25519 private key.
+    ///
+    /// # Arguments
+    ///
+    /// * `message` - The byte slice to sign
+    ///
+    /// # Returns
+    ///
+    /// An Ed25519 `Signature` (64 bytes)
+    ///
+    /// # Security
+    ///
+    /// Ed25519 signatures are deterministic and secure against side-channel attacks.
+    /// The same message will always produce the same signature.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let message = b"RustChain attestation";
+    /// let signature = keypair.sign(message);
+    /// ```
     pub fn sign(&self, message: &[u8]) -> Signature {
         self.signing_key.sign(message)
     }
     
+    /// Get the public key as a hexadecimal string.
+    ///
+    /// # Returns
+    ///
+    /// A 64-character lowercase hexadecimal string representing the 32-byte public key.
+    ///
+    /// # Usage
+    ///
+    /// The hex-encoded public key is used as the miner's identifier in the RustChain
+    /// network and for verifying signatures.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let public_key = keypair.public_key_hex();
+    /// println!("Miner ID: {}", public_key);
+    /// assert_eq!(public_key.len(), 64);
+    /// ```
     pub fn public_key_hex(&self) -> String {
         hex::encode(self.verifying_key.as_bytes())
     }

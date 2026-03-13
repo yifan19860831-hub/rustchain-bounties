@@ -22,6 +22,38 @@ impl Default for Config {
     }
 }
 
+/// Load miner configuration from file or use defaults.
+///
+/// # Returns
+///
+/// A Result containing:
+/// - `Ok(Config)` - Loaded configuration from `config.toml` or default values
+/// - `Err(anyhow::Error)` - If file exists but cannot be read or parsed
+///
+/// # Configuration File
+///
+/// Looks for `config.toml` in the current working directory. If not found,
+/// returns default configuration:
+/// - `rpc_endpoint`: "https://rustchain.org/api"
+/// - `miner_id`: Empty string (should be set by user)
+/// - `private_key`: None (will be generated if needed)
+/// - `interval_seconds`: 60
+///
+/// # File Format
+///
+/// ```toml
+/// rpc_endpoint = "https://your-node.example.com/api"
+/// miner_id = "unique-miner-identifier"
+/// private_key = "optional-hex-key"
+/// interval_seconds = 60
+/// ```
+///
+/// # Example
+///
+/// ```
+/// let config = load_config()?;
+/// println!("Connecting to: {}", config.rpc_endpoint);
+/// ```
 pub fn load_config() -> anyhow::Result<Config> {
     // Try to load from config file, otherwise use defaults
     let config_path = "config.toml";
