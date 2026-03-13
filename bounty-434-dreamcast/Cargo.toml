@@ -1,0 +1,34 @@
+[package]
+name = "rustchain-dreamcast"
+version = "0.1.0"
+edition = "2021"
+authors = ["RustChain Contributors"]
+description = "RustChain cryptocurrency miner ported to Sega Dreamcast"
+license = "MIT"
+
+[lib]
+name = "rustchain_dc"
+path = "src/lib.rs"
+crate-type = ["staticlib", "rlib"]
+
+[[bin]]
+name = "miner"
+path = "src/main.rs"
+
+[dependencies]
+# No external dependencies for no_std compatibility
+# All hashing implemented inline for SH-4 optimization
+
+[profile.release]
+opt-level = "z"  # Optimize for size (limited storage)
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.dev]
+opt-level = 0
+debug = true
+panic = "abort"
+
+# Custom target configuration
+# Build with: cargo build --target target-specs/sh4-unknown-kallistios.json --release
