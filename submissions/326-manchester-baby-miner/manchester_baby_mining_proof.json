@@ -1,0 +1,31 @@
+{
+  "bounty_id": 346,
+  "bounty_title": "Port Miner to Manchester Baby (1948)",
+  "tier": "LEGENDARY",
+  "reward_rtc": 200,
+  "wallet": "RTC4325af95d26d59c3ef025963656d22af638bb96b",
+  "miner_result": {
+    "success": true,
+    "wallet": "RTC4325af95d26d59c3ef025963656d22af638bb96b",
+    "nonce": 8,
+    "hash": "07bf904e9f85b57533ce028d4d0846c44866bc513f5088abcd9fd25b60301c9e",
+    "target": "FFFFFF00",
+    "instructions_executed": 260,
+    "time_elapsed": 1.1444091796875e-05,
+    "effective_speed": 22719146.666666668,
+    "timestamp": "2026-03-14T02:16:30.080003",
+    "hardware": {
+      "name": "Manchester Baby (SSEM)",
+      "year": 1948,
+      "memory_bits": 1024,
+      "memory_words": 32,
+      "word_length": 32,
+      "instructions": 7,
+      "memory_type": "Williams-Kilburn Tube (CRT)",
+      "antiquity_multiplier": 10.0
+    }
+  },
+  "proof_type": "simulation",
+  "documentation": "See README.md for full technical documentation",
+  "historical_significance": "The Manchester Baby (SSEM) was the world's first stored-program computer,\nrunning its first program on June 21, 1948. This miner demonstrates that\neven the most primitive computer architecture can conceptually perform\nproof-of-work mining, making it the ultimate 'Proof-of-Antiquity' hardware.\n\nKey specifications:\n- 32 words \u00d7 32 bits = 1024 bits total memory\n- Williams-Kilburn tube memory (CRT-based)\n- 7 instructions in the entire ISA\n- ~1100 instructions per second\n- First program: Find highest proper factor of 2^18 (52 minutes)\n\nThis is the oldest possible hardware that could theoretically mine RustChain,\nearning the maximum antiquity multiplier of 10.0x."
+}
