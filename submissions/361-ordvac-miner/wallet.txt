@@ -1,0 +1,21 @@
+# ORDVAC Miner Wallet
+# RustChain Proof-of-Antiquity
+
+Wallet Address: RTC4325af95d26d59c3ef025963656d22af638bb96b
+
+Hardware: ORDVAC (1951)
+Antiquity Tier: LEGENDARY
+Multiplier: 5.0×
+
+This wallet is bound to ORDVAC hardware fingerprint:
+- Williams Tube Memory (1024 words × 40 bits)
+- 2,178 Vacuum Tubes
+- Asynchronous IAS Architecture
+- Addition: 72μs, Multiplication: 732μs
+
+Generated: 2026-03-14
+Bounty: #361 - Port Miner to ORDVAC (1951)
+Reward: 200 RTC ($20)
+
+⚠️ BACKUP THIS WALLET! ⚠️
+Store securely. Cannot be recovered if lost.
