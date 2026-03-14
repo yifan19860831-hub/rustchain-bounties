@@ -1,0 +1,13 @@
+# ENIAC RustChain Miner Requirements
+# ===================================
+
+# Core dependencies
+# requests is optional (for online mode)
+requests>=2.28.0
+
+# Development
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# Documentation
+markdown-it-py>=2.0.0
