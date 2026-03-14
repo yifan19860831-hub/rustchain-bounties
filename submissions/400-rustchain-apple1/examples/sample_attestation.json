@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "hardware": {
+    "platform": "Apple I",
+    "cpu": "MOS 6502",
+    "clock_hz": 1022727,
+    "memory_bytes": 4094,
+    "rom_bytes": 256,
+    "year": 1976,
+    "manufacturer": "Apple Computer Company",
+    "designer": "Steve Wozniak"
+  },
+  "fingerprint": {
+    "checks": {
+      "cycle_timing": {
+        "pass": true,
+        "signature": "f40857e3f7586f4a",
+        "description": "MOS 6502 @ 1.022727 MHz"
+      },
+      "zero_page": {
+        "pass": true,
+        "signature": "fd6fb14e9becebb0",
+        "description": "Zero-page 1-cycle savings"
+      },
+      "thermal": {
+        "pass": true,
+        "signature": "1d3f7e1392ede7f7",
+        "description": "NMOS 1.5W TDP signature"
+      },
+      "wozmon_rom": {
+        "pass": true,
+        "signature": "d80d8ffc9654c2f8",
+        "description": "Wozmon monitor ROM"
+      },
+      "no_cache": {
+        "pass": true,
+        "signature": "8fd62e532e9e59b6",
+        "description": "Direct RAM access (no cache)"
+      },
+      "eight_bit": {
+        "pass": true,
+        "signature": "d88f38a24e46422c",
+        "description": "8-bit accumulator, no SIMD"
+      }
+    },
+    "all_passed": true,
+    "fingerprint_hash": "4496cb7b0efd6531f4d93f93d1f47a95a90114cb3ba9f47ad5662e962a53f0e5",
+    "platform": "Apple I",
+    "cpu": "MOS 6502",
+    "year": 1976
+  },
+  "antiquity_multiplier": 5.0,
+  "timestamp": 1773430612,
+  "epoch": 1,
+  "wallet": "RTC4325af95d26d59c3ef025963656d22af638bb96b",
+  "signature": "81c47c671d54c4fe18d8672294c4cae33250bc2dae517a0be0777ba28957afbf"
+}
