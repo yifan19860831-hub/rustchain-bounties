@@ -1,0 +1,7 @@
+IBM 701 Miner Wallet
+========================================
+Address: RTC4325af95d26d59c3ef025963656d22af638bb96b
+Hardware: IBM 701 (1952)
+Multiplier: 5.0x LEGENDARY
+
+BACKUP THIS FILE!
